@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import *
+from functions.get_files_info import available_functions
+
+
+
 
 
 def main():
@@ -31,16 +35,35 @@ def generate_content(client,messages):
     response = client.models.generate_content(
     model='gemini-2.0-flash-001', 
     contents=messages,
-    config=types.GenerateContentConfig(system_instruction=system_prompt),
+    config=types.GenerateContentConfig(tools=[available_functions], system_instruction=system_prompt),
     )
     usage = response.usage_metadata
 
-    if verbose:
-        print(f"User prompt: {sys.argv[1]}")
-        print(f"Prompt tokens: {usage.prompt_token_count}")
-        print(f"Response tokens: {usage.candidates_token_count}")
-    print("Response:")    
-    print(response.text)
+    
+    
+    for part in response.candidates[0].content.parts:
+        if part.function_call:
+            print(f"Calling function: {part.function_call.name}({part.function_call.args})")
+        elif part.text:
+            if verbose:
+                print(f"User prompt: {sys.argv[1]}")
+                print(f"Prompt tokens: {usage.prompt_token_count}")
+                print(f"Response tokens: {usage.candidates_token_count}")
+            print("Response:") 
+            print(part.text)
+            
+    
+    
+    
+    
+    
+    
+    
+    #print("Response:") 
+    #print(response.text)
+    
+    #f"Calling function: {response.function_calls.name}({response.function_calls.args})"
+
 
 
 
