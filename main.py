@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import *
-from functions.get_files_info import available_functions
+from call_function import available_functions
 
 
 
@@ -58,11 +58,7 @@ def generate_content(client,messages):
     
     
     
-    
-    #print("Response:") 
-    #print(response.text)
-    
-    #f"Calling function: {response.function_calls.name}({response.function_calls.args})"
+   
 
 
 
