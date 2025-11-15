@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import *
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 
 
@@ -44,6 +44,17 @@ def generate_content(client,messages):
     for part in response.candidates[0].content.parts:
         if part.function_call:
             print(f"Calling function: {part.function_call.name}({part.function_call.args})")
+
+            result = call_function(part.function_call, verbose=verbose)
+
+            if not result.parts or not result.parts[0].function_response.response:
+                raise Exception("Function result missing function_response")
+            
+            result_payload = result.parts[0].function_response.response
+
+            if verbose:
+                print(f"-> {result_payload}")      
+
         elif part.text:
             if verbose:
                 print(f"User prompt: {sys.argv[1]}")
@@ -52,15 +63,6 @@ def generate_content(client,messages):
             print("Response:") 
             print(part.text)
             
-    
-    
-    
-    
-    
-    
-   
-
-
 
 
 if __name__ == "__main__":
