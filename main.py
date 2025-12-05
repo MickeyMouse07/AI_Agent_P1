@@ -87,10 +87,7 @@ def generate_content(client,messages, verbose):
     if not response.function_calls:
         return response.text         
 
-
-
-
-    
+   
 
     function_responses = []
     for part in response.function_calls:
@@ -111,23 +108,6 @@ def generate_content(client,messages, verbose):
         
     messages.append(types.Content(role="user", parts=function_responses))
 
-
-
-
-
-
-
-
-   
-
-                  
-
-        #elif part.text:
-
-            #print("Response:") 
-            #print(part.text)
-
-            
 
         
 
